@@ -202,9 +202,39 @@
     height:auto;
     margin-top:8px;
   }
+
+  /* ——— DOWNLOAD BUTTON ——— */
+  .dl-bar{
+    width:1200px;
+    margin:0 auto 16px;
+    display:flex;
+    justify-content:flex-end;
+  }
+  .dl-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;
+    color:#fff;background:#1C57AB;
+    border:none;cursor:pointer;
+    padding:11px 22px;border-radius:4px;
+    letter-spacing:.01em;
+    box-shadow:0 2px 8px rgba(15,35,89,.25);
+    transition:background .15s;
+  }
+  .dl-btn:hover{background:#0F2359;}
+  .dl-btn:disabled{background:#6B7692;cursor:wait;}
+  .dl-btn svg{flex:0 0 auto;}
 </style>
 </head>
 <body>
+
+<div class="dl-bar">
+  <button class="dl-btn" id="dlBtn" onclick="downloadJPG()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Download as JPG
+  </button>
+</div>
 
 <div class="page" data-screen-label="One pager">
 
@@ -365,4 +395,34 @@
 
 
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+async function downloadJPG() {
+  const btn = document.getElementById('dlBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Rendering…';
+
+  try {
+    const page = document.querySelector('.page');
+    const canvas = await html2canvas(page, {
+      scale: 3,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: null,
+      logging: false
+    });
+
+    // Convert to JPG
+    const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
+    const a = document.createElement('a');
+    a.href = jpgUrl;
+    a.download = 'LatentView-Social-Media-Guidelines.jpg';
+    a.click();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download as JPG';
+  }
+}
+</script>
 </body></html>
